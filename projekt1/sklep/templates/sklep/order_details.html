@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if products.0.order != None %}
+        <p>{{products.0.order }} poniżej twoje zamówienie : </p>
+    {% endif %}
+    {% for product in products%}
+        <p> Produkt: {{ product.product.name }} sztuk : {{ product.amount }} cena sztuki : {{ product.product.price }} </p>
+    {% endfor %}
+   <b> <p>Cena zamówienia: {{ total_price }}</p></b>
+{%endblock%}
