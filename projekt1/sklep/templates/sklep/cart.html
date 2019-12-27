@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <ul class="mt-4">
+        {% for product, amount in products %}
+        <form action="/cart/delete/{{product.id}}" method="post">
+            {% csrf_token %}
+            <li>{{product.name}} {{product.price}} liczba sztuk: {{amount}} </li>
+            <input type="hidden" name="item_id" value="{{ product.id }}">
+            <input type="submit" class="btn btn-outline-danger" value="Usuń produkt">
+        </form>
+        {% endfor %}
+    </ul>
+    <h3>
+        Wartość twojego zamówienia wynosi: {{sum}}
+    </h3>
+    <form action="/order/" method="get">
+        Masz kod rabatowy wprowadź go tutaj : <input type="text" name="code">
+        <button type="submit" class="btn btn-primary btn-success btn-block mt-4" >Złóż zamówienie</button>
+    </form>
+    <div class="text-center">
+        <a class="btn btn-primary mt-3" href='/products/' role="button">Lista produktów</a>
+    </div>
+{%endblock%}
