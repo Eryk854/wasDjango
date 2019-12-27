@@ -1,8 +1,64 @@
 {% extends "base.html" %}
 {% block title %} Strona piwosz {% endblock %}
 {% block content %}
-    <h1>Kategoria: {{product.name}}</h1>
-    <p> Cena : {{product.price}}  Waga: {{product.weight}} </p>
-    <p>Opis: {{product.description}}</p>
-    <a class="btn btn-primary" href='../products' role="button">Przejdź do panelu produktów</a>
+    <div class="row mt-4" >
+        <div class="col-4 ">
+            <img class="img-fluid"  src="{{ product.product_image.url }}" alt="{{product.name}}">
+        </div>
+        <div class="col-8">
+            <h1>Kategoria: {{product.name}}</h1>
+            <p> Cena : {{product.price}}  Waga: {{product.weight}} </p>
+            <p>Opis: {{product.description}}</p>
+            {% if product.votes == 0 %}
+            <h4>Nikt nie ocenił jeszcze tego produktu. Bądź pierwszy!!</h4>
+            {% else %}
+            <h4>Ocena prouktu wynosi : {{product.rating}}/10</h4>
+            Głos oddało: {{product.votes}} użytkowników
+            {% endif %}
+            <div class="mt-4">
+                <form action="/cart/add/" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="item_id" value="{{ product.id }}">
+                     Ilość sztuk : <input type="number" name="amount">
+                    <input type="submit" value="Dodaj do koszyka">
+                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <h3 class="mt-3"> Oceń produkt </h3>
+        <form action="/products/vote/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="item_id" value="{{ product.id }}">
+            {% for i in '0123456789'|make_list %}
+            <label >
+                <input type="radio" name="vote" value="{{forloop.counter}}">{{forloop.counter}}</input>
+            </label>
+            {% endfor %}
+            <input type="submit" value="Dodaj ocenę produktu">
+        </form>
+    </div>
+
+
+    <div>
+        <h3 class="mt-4">Wasze komentarze produktu :</h3>
+        <ul>
+            {% for comment in comments %}
+                <li> {{comment.text}} </li>
+            {% endfor %}
+        </ul>
+
+        <form action="/products/add_comment/" method="post">
+            <div class="form-group">
+                {% csrf_token %}
+                <input type="hidden" name="item_id" value="{{ product.id }}">
+                <textarea class="form-control form-control-lg" name="comment"> </textarea>
+                <input type="submit" value="Dodaj komentarz">
+            </div>
+        </form>
+    </div>
+    <div class="text-center">
+        <a class="btn btn-primary mt-3" href='../products' role="button">Lista produktów</a>
+    </div>
 {%endblock%}

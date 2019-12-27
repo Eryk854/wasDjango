@@ -1,10 +1,26 @@
 {% extends "base.html" %}
-
+{% load mathfilters %}
+{% load custom_filter%}
 {% block content %}
     <h1> Zamówienie </h1>
+<ul>
+    {% for product,amount in products %}
+    <li> {{product.name}} o cenie : {{ product.price }} w ilości {{amount}}</li>
+    {% endfor %}
+</ul>
+{% if discount|is_numeric %}
+    {% with sum=sum discount=discount %}
+        Wartość zamówienia : {{sum}} - {{discount|percentage}} rabat = {{sum|value:discount}}
+    {% endwith %}
+{% elif discount == "Nie poprawny kod!" %}
+    Wprowadziłeś nie poprawny kod!
+    Wartość zamówienia : {{sum}}
+{% else %}
+    Wartość zamówienia : {{sum}}
+{% endif %}
         <form action="/order/" method="post">
             {% csrf_token %}
             {{ form }}
-            <input type="submit" value="Złóż">
+            <button type="submit" class="btn btn-primary btn-success btn-block mt-4" >Złóż zamówienie</button>
         </form>
 {%endblock%}
